@@ -61,3 +61,5 @@ plt.ylabel('Return')  # Label for vertical axis
 plt.title('')  # Plot title
 plt.grid(True)  # Add grid
 plt.show()
+
+df
