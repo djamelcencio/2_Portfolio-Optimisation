@@ -1,0 +1,63 @@
+import numpy as np
+import pandas as pd
+from numpy.linalg import multi_dot
+import matplotlib.pyplot as plt
+
+# mean
+mu = np.array([0.02, 0.07, 0.15 ,0.2])
+    
+# S of the assets
+S = np.array([0.05, 0.12, 0.17, 0.25])
+    
+# correaltion matrix
+R = np.array([[1, 0.3, 0.3, 0.3],
+              [0.3, 1, 0.6, 0.6],
+              [0.3, 0.6, 1, 0.6],
+              [0.3, 0.6, 0.6, 1]])
+    
+# covariance matrix
+cov_matrix = np.diag(S) @ R @ np.diag(S)
+
+
+# Initialize an empty list to store the allocation sets
+weights_sets = []; returns = []; volatility= []; weights_list= []; portfolio_id = []
+
+# Generate allocation sets
+def porfolios_simulation(num_of_portfolios):
+
+    port_id = 0
+    
+    for x in range(num_of_portfolios):
+
+        port_id += 1
+
+        # Generate three random numbers
+        w1, w2, w3 = np.random.rand(3)
+
+        # Compute the fourth number
+        w4 = 1 - (w1 + w2 + w3)
+
+        # Convert the list to a numpy array
+        weights = np.array([w1, w2, w3, w4])
+        # Each numpy array is converted into a list 
+        weights_list.append(weights)
+
+        returns.append(weights@mu)
+
+        volatility.append(np.sqrt(weights@cov_matrix@weights))
+        
+        portfolio_id.append(port_id)
+
+porfolios_simulation(1000)
+
+data = {'portfolio_id': portfolio_id, 'weights': weights_list, 'portfolio_returns': returns, 'portfolio_volatility': volatility}
+
+df = pd.DataFrame(data)
+
+# Plotting
+plt.scatter(volatility, returns,marker='o', c = 'y')
+plt.xlabel('Risk')  # Label for horizontal axis
+plt.ylabel('Return')  # Label for vertical axis
+plt.title('')  # Plot title
+plt.grid(True)  # Add grid
+plt.show()
